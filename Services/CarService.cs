@@ -60,4 +60,50 @@ public class CarService(AppDbContext db)
         return new ClaimDto(claim.Id, claim.CarId, claim.ClaimDate.ToString("yyyy-MM-dd"), 
                            claim.Description, claim.Amount);
     }
+
+    public async Task<CarHistoryResponse> GetCarHistoryAsync(long carId)
+    {
+        var carExists = await _db.Cars.AnyAsync(c => c.Id == carId);
+        if (!carExists) throw new KeyNotFoundException($"Car {carId} not found");
+
+        var policies = await _db.Policies
+            .Where(p => p.CarId == carId)
+            .ToListAsync();
+
+        var claims = await _db.Claims
+            .Where(c => c.CarId == carId)
+            .ToListAsync();
+
+        var historyItems = new List<HistoryItem>();
+
+        historyItems.AddRange(policies.Select(p => new HistoryItem(
+            Date: p.StartDate.ToString("yyyy-MM-dd"),
+            Type: "PolicyStart",
+            PolicyId: p.Id,
+            Provider: p.Provider,
+            StartDate: p.StartDate.ToString("yyyy-MM-dd"),
+            EndDate: p.EndDate.ToString("yyyy-MM-dd")
+        )));
+
+        historyItems.AddRange(policies.Select(p => new HistoryItem(
+            Date: p.EndDate.ToString("yyyy-MM-dd"),
+            Type: "PolicyEnd",
+            PolicyId: p.Id,
+            Provider: p.Provider,
+            StartDate: p.StartDate.ToString("yyyy-MM-dd"),
+            EndDate: p.EndDate.ToString("yyyy-MM-dd")
+        )));
+
+        historyItems.AddRange(claims.Select(c => new HistoryItem(
+            Date: c.ClaimDate.ToString("yyyy-MM-dd"),
+            Type: "Claim",
+            ClaimId: c.Id,
+            Description: c.Description,
+            Amount: c.Amount
+        )));
+
+        var sortedHistory = historyItems.OrderBy(h => DateOnly.Parse(h.Date)).ToList();
+
+        return new CarHistoryResponse(carId, sortedHistory);
+    }
 }
