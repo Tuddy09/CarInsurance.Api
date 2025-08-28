@@ -19,13 +19,22 @@ public class CarService(AppDbContext db)
 
     public async Task<bool> IsInsuranceValidAsync(long carId, DateOnly date)
     {
+        if (carId <= 0)
+            throw new ArgumentException("Car ID must be a positive number.");
+
         var carExists = await _db.Cars.AnyAsync(c => c.Id == carId);
         if (!carExists) throw new KeyNotFoundException($"Car {carId} not found");
+
+        var minValidDate = new DateOnly(1900, 1, 1);
+        var maxValidDate = DateOnly.FromDateTime(DateTime.Now.AddYears(100));
+        
+        if (date < minValidDate || date > maxValidDate)
+            throw new ArgumentException($"Date must be possible.");
 
         return await _db.Policies.AnyAsync(p =>
             p.CarId == carId &&
             p.StartDate <= date &&
-            p.EndDate >= date // Remove the null check
+            p.EndDate >= date // Removed the null check
         );
     }
 

@@ -17,6 +17,9 @@ public class CarsController(CarService service) : ControllerBase
     [HttpGet("cars/{carId:long}/insurance-valid")]
     public async Task<ActionResult<InsuranceValidityResponse>> IsInsuranceValid(long carId, [FromQuery] string date)
     {
+        if (string.IsNullOrWhiteSpace(date))
+            return BadRequest("Date parameter is required.");
+
         if (!DateOnly.TryParse(date, out var parsed))
             return BadRequest("Invalid date format. Use YYYY-MM-DD.");
 
@@ -25,9 +28,13 @@ public class CarsController(CarService service) : ControllerBase
             var valid = await _service.IsInsuranceValidAsync(carId, parsed);
             return Ok(new InsuranceValidityResponse(carId, parsed.ToString("yyyy-MM-dd"), valid));
         }
-        catch (KeyNotFoundException)
+        catch (KeyNotFoundException ex)
         {
-            return NotFound();
+            return NotFound(ex.Message);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
         }
     }
 
