@@ -5,3 +5,92 @@ Accept: application/json
 ### Check insurance validity for a car (example: carId=1, date=2024-06-01)
 GET https://localhost:61341/api/cars/1/insurance-valid?date=2024-06-01
 Accept: application/json
+
+### Register a claim for a car
+POST https://localhost:61341/api/cars/1/claims
+Content-Type: application/json
+Accept: application/json
+
+{
+  "claimDate": "2024-06-15",
+  "description": "Minor accident",
+  "amount": 1200.50
+}
+
+### Register another claim example (different car)
+POST https://localhost:61341/api/cars/2/claims
+Content-Type: application/json
+Accept: application/json
+
+{
+  "claimDate": "2024-07-20",
+  "description": "Windshield replacement",
+  "amount": 450.00
+}
+
+### Get car history (example: carId=1)
+GET https://localhost:61341/api/cars/1/history
+Accept: application/json
+
+### Get car history (example: carId=2)
+GET https://localhost:61341/api/cars/2/history
+Accept: application/json
+
+### Test error cases
+
+### Check insurance validity for non-existent car (should return 404)
+GET https://localhost:61341/api/cars/999/insurance-valid?date=2024-06-01
+Accept: application/json
+
+### Check insurance validity with invalid date format (should return 400)
+GET https://localhost:61341/api/cars/1/insurance-valid?date=invalid-date
+Accept: application/json
+
+### Register claim for non-existent car (should return 404)
+POST https://localhost:61341/api/cars/999/claims
+Content-Type: application/json
+Accept: application/json
+
+{
+  "claimDate": "2024-06-15",
+  "description": "Test claim",
+  "amount": 100.00
+}
+
+### Register claim with invalid date (should return 400)
+POST https://localhost:61341/api/cars/1/claims
+Content-Type: application/json
+Accept: application/json
+
+{
+  "claimDate": "invalid-date",
+  "description": "Test claim",
+  "amount": 100.00
+}
+
+### Register claim with future date (should return 400)
+POST https://localhost:61341/api/cars/1/claims
+Content-Type: application/json
+Accept: application/json
+
+{
+  "claimDate": "2025-12-31",
+  "description": "Future claim test",
+  "amount": 100.00
+}
+
+### Register claim with negative amount (should return 400)
+POST https://localhost:61341/api/cars/1/claims
+Content-Type: application/json
+Accept: application/json
+
+{
+  "claimDate": "2024-06-15",
+  "description": "Test claim",
+  "amount": -100.00
+}
+
+### Get history for non-existent car (should return 404)
+GET https://localhost:61341/api/cars/999/history
+Accept: application/json
+
