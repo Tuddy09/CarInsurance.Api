@@ -1,4 +1,4 @@
-    using CarInsurance.Api.Models;
+using CarInsurance.Api.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace CarInsurance.Api.Data;
@@ -8,6 +8,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<Owner> Owners => Set<Owner>();
     public DbSet<Car> Cars => Set<Car>();
     public DbSet<InsurancePolicy> Policies => Set<InsurancePolicy>();
+    public DbSet<Claim> Claims => Set<Claim>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -21,6 +22,10 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
         modelBuilder.Entity<InsurancePolicy>()
             .Property(p => p.EndDate) // Now enforced similar to StartDate
+            .IsRequired();
+
+        modelBuilder.Entity<Claim>()
+            .Property(c => c.Description)
             .IsRequired();
     }
 }
