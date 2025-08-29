@@ -40,7 +40,7 @@ public class InsuranceValidityBoundaryTests
     }
 
     [Fact]
-    public void Test_ExactPolicyStartDate_ReturnsValid()
+    public async Task Test_ExactPolicyStartDate_ReturnsValid()
     {
         // Arrange
         using var context = GetInMemoryDbContext();
@@ -48,7 +48,7 @@ public class InsuranceValidityBoundaryTests
         var controller = new CarsController(service);
         
         // Act - Test exact policy start date (boundary condition)
-        var result = controller.IsInsuranceValid(1, "2024-01-01").Result;
+        var result = await controller.IsInsuranceValid(1, "2024-01-01");
         
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result.Result);
@@ -58,7 +58,7 @@ public class InsuranceValidityBoundaryTests
     }
 
     [Fact]
-    public void Test_ExactPolicyEndDate_ReturnsValid()
+    public async Task Test_ExactPolicyEndDate_ReturnsValid()
     {
         // Arrange
         using var context = GetInMemoryDbContext();
@@ -66,7 +66,7 @@ public class InsuranceValidityBoundaryTests
         var controller = new CarsController(service);
         
         // Act - Test exact policy end date (boundary condition)
-        var result = controller.IsInsuranceValid(1, "2024-12-31").Result;
+        var result = await controller.IsInsuranceValid(1, "2024-12-31");
         
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result.Result);
@@ -76,7 +76,7 @@ public class InsuranceValidityBoundaryTests
     }
 
     [Fact]
-    public void Test_OneDayBeforePolicy_ReturnsInvalid()
+    public async Task Test_OneDayBeforePolicy_ReturnsInvalid()
     {
         // Arrange
         using var context = GetInMemoryDbContext();
@@ -84,7 +84,7 @@ public class InsuranceValidityBoundaryTests
         var controller = new CarsController(service);
         
         // Act - Test one day before policy starts
-        var result = controller.IsInsuranceValid(1, "2023-12-31").Result;
+        var result = await controller.IsInsuranceValid(1, "2023-12-31");
         
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result.Result);
@@ -94,7 +94,7 @@ public class InsuranceValidityBoundaryTests
     }
 
     [Fact]
-    public void Test_OneDayAfterPolicy_ReturnsInvalid()
+    public async Task Test_OneDayAfterPolicy_ReturnsInvalid()
     {
         // Arrange
         using var context = GetInMemoryDbContext();
@@ -102,7 +102,7 @@ public class InsuranceValidityBoundaryTests
         var controller = new CarsController(service);
         
         // Act - Test one day after policy ends
-        var result = controller.IsInsuranceValid(1, "2025-01-01").Result;
+        var result = await controller.IsInsuranceValid(1, "2025-01-01");
         
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result.Result);
@@ -112,7 +112,7 @@ public class InsuranceValidityBoundaryTests
     }
 
     [Fact]
-    public void Test_NonExistentCarId_ReturnsNotFound()
+    public async Task Test_NonExistentCarId_ReturnsNotFound()
     {
         // Arrange
         using var context = GetInMemoryDbContext();
@@ -120,7 +120,7 @@ public class InsuranceValidityBoundaryTests
         var controller = new CarsController(service);
         
         // Act - Test non-existent car ID
-        var result = controller.IsInsuranceValid(999, "2024-06-15").Result;
+        var result = await controller.IsInsuranceValid(999, "2024-06-15");
         
         // Assert
         var notFoundResult = Assert.IsType<NotFoundObjectResult>(result.Result);
@@ -128,7 +128,7 @@ public class InsuranceValidityBoundaryTests
     }
 
     [Fact]
-    public void Test_ImpossibleDate_ReturnsBadRequest()
+    public async Task Test_ImpossibleDate_ReturnsBadRequest()
     {
         // Arrange
         using var context = GetInMemoryDbContext();
@@ -136,7 +136,7 @@ public class InsuranceValidityBoundaryTests
         var controller = new CarsController(service);
         
         // Act - Test impossible date (February 30)
-        var result = controller.IsInsuranceValid(1, "2024-02-30").Result;
+        var result = await controller.IsInsuranceValid(1, "2024-02-30");
         
         // Assert
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result.Result);
