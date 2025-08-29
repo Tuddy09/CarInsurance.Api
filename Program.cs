@@ -1,5 +1,6 @@
 using CarInsurance.Api.Data;
 using CarInsurance.Api.Services;
+using CarInsurance.Api.BackgroundServices;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +11,11 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
 });
 
 builder.Services.AddScoped<CarService>();
+builder.Services.AddScoped<ITimeProvider, SystemTimeProvider>();
+builder.Services.AddScoped<PolicyExpirationService>();
+
+// Register the background service
+builder.Services.AddHostedService<PolicyExpirationBackgroundService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

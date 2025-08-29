@@ -9,6 +9,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<Car> Cars => Set<Car>();
     public DbSet<InsurancePolicy> Policies => Set<InsurancePolicy>();
     public DbSet<Claim> Claims => Set<Claim>();
+    public DbSet<PolicyExpirationLog> PolicyExpirationLogs => Set<PolicyExpirationLog>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -27,6 +28,14 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         modelBuilder.Entity<Claim>()
             .Property(c => c.Description)
             .IsRequired();
+
+        modelBuilder.Entity<PolicyExpirationLog>()
+            .Property(p => p.LogMessage)
+            .IsRequired();
+
+        modelBuilder.Entity<PolicyExpirationLog>()
+            .HasIndex(p => p.PolicyId)
+            .IsUnique(); // Ensure we can only log each policy expiration once
     }
 }
 

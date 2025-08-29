@@ -5,7 +5,7 @@ VisualStudioVersion = 17.14.36408.4
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarInsurance.Api", "CarInsurance.Api.csproj", "{D448F1CB-6F0E-736C-EEF1-3AC5923400B1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarInsurace.Api.Tests", "CarInsurace.Api.Tests\CarInsurace.Api.Tests.csproj", "{3E529FD3-EA94-4511-8995-78D4FA618308}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarInsurance.Api.Tests", "CarInsurace.Api.Tests\CarInsurance.Api.Tests.csproj", "{3E529FD3-EA94-4511-8995-78D4FA618308}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

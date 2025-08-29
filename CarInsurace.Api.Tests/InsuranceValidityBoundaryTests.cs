@@ -135,7 +135,7 @@ public class InsuranceValidityBoundaryTests
         var service = new CarService(context);
         var controller = new CarsController(service);
         
-        // Act - Test impossible date (e.g., February 30)
+        // Act - Test impossible date (February 30)
         var result = controller.IsInsuranceValid(1, "2024-02-30").Result;
         
         // Assert
